@@ -4,6 +4,9 @@ import java.util.Vector;
 public class Duke {
     private static Vector<String> buffer = new Vector<>();
 
+    /**
+     Entry point into this java program.
+     */
     public static void main(String[] args) {
         /*
         String logo = " ____        _        \n"
@@ -22,17 +25,17 @@ public class Duke {
         levelThree();
     }
 
-    private static void printBuffer(){
+    private static void printBuffer() {
         String horizontalLine = "____________________________________________________________";
         System.out.println(horizontalLine);
-        for (int i = 0; i < buffer.size(); i++){
+        for (int i = 0; i < buffer.size(); i++) {
             System.out.println(buffer.get(i));
         }
         System.out.println(horizontalLine);
         buffer.clear();
     }
 
-    private static void exitConversation(){
+    private static void exitConversation() {
         buffer.addElement("Bye. Hope to see you again soon!");
         printBuffer();
     }
@@ -44,8 +47,7 @@ public class Duke {
             if (input.equals("bye")) {
                 exitConversation();
                 break;
-            }
-            else {
+            } else {
                 buffer.addElement(input);
                 printBuffer();
             }
@@ -62,15 +64,13 @@ public class Duke {
             if (input.equals("bye")) {
                 exitConversation();
                 break;
-            }
-            else if (input.equals("list")) {
+            } else if (input.equals("list")) {
                 for (int i = 0; i < inputs.size(); i++) {
                     String temp = Integer.toString(i + 1);
                     temp = temp.concat(". " + inputs.get(i));
                     buffer.addElement(temp);
                 }
-            }
-            else {
+            } else {
                 inputs.addElement(input);
                 buffer.addElement("added: ".concat(input));
             }
@@ -88,26 +88,24 @@ public class Duke {
             if (input.equals("bye")) {
                 exitConversation();
                 break;
-            }
-            else if (input.length() >= 6 && input.substring(0, 4).equals("done")) {
+            } else if (input.length() >= 6 && input.substring(0, 4).equals("done")) {
                 int index = Integer.parseInt(input.substring(5)) - 1;
 
                 if (index >= 0 && index < inputs.size()) {
                     inputs.get(index).markDone();
                     buffer.addElement("Nice! I've marked this task as done:");
-                    buffer.addElement(" [" + inputs.get(index).getStatusIcon() + "] " + inputs.get(index).getTaskName());
-                }
-                else {
+                    buffer.addElement(" [" + inputs.get(index).getStatusIcon() + "] "
+                            + inputs.get(index).getTaskName());
+                } else {
                     buffer.addElement("Invalid index. Type 'list' to see your list.");
                 }
-            }
-            else if (input.equals("list")) {
+            } else if (input.equals("list")) {
                 for (int i = 0; i < inputs.size(); i++) {
                     String temp = Integer.toString(i + 1);
-                    buffer.addElement(temp.concat(".[" + inputs.get(i).getStatusIcon() + "] " + inputs.get(i).getTaskName()));
+                    buffer.addElement(temp.concat(".[" + inputs.get(i).getStatusIcon() + "] "
+                            + inputs.get(i).getTaskName()));
                 }
-            }
-            else {
+            } else {
                 inputs.addElement(new Task(input));
                 buffer.addElement("added: " + input);
             }
