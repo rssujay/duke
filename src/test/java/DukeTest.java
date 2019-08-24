@@ -19,12 +19,13 @@ public class DukeTest {
         buffer.addElement("Hello! I'm Duke");
         buffer.addElement("What can I do for you?");
         printBuffer();
-
-        //levelOne();
-        //levelTwo();
-        levelThree();
+        startDuke();
     }
 
+    /**
+     * Prints out each item currently in the buffer
+     * vector on a new line. Subsequently, clears the buffer.
+     */
     private static void printBuffer() {
         String horizontalLine = "____________________________________________________________";
         System.out.println(horizontalLine);
@@ -40,74 +41,55 @@ public class DukeTest {
         printBuffer();
     }
 
-    private static void levelOne() {
-        Scanner scanner = new Scanner(System.in);
-        while (scanner.hasNext()) {
-            String input = scanner.nextLine();
-            if (input.equals("bye")) {
-                exitConversation();
-                break;
-            } else {
-                buffer.addElement(input);
-                printBuffer();
-            }
-        }
-    }
-
-    private static void levelTwo() {
-        Scanner scanner = new Scanner(System.in);
-        Vector<String> inputs = new Vector<>();
-
-        while (scanner.hasNext()) {
-            String input = scanner.nextLine();
-
-            if (input.equals("bye")) {
-                exitConversation();
-                break;
-            } else if (input.equals("list")) {
-                for (int i = 0; i < inputs.size(); i++) {
-                    String temp = Integer.toString(i + 1);
-                    temp = temp.concat(". " + inputs.get(i));
-                    buffer.addElement(temp);
-                }
-            } else {
-                inputs.addElement(input);
-                buffer.addElement("added: ".concat(input));
-            }
-            printBuffer();
-        }
-    }
-
-    private static void levelThree() {
+    private static void startDuke() {
         Scanner scanner = new Scanner(System.in);
         Vector<Task> inputs = new Vector<>();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
+            String[] commands = input.split(" ");
 
             if (input.equals("bye")) {
                 exitConversation();
                 break;
-            } else if (input.length() >= 6 && input.substring(0, 4).equals("done")) {
-                int index = Integer.parseInt(input.substring(5)) - 1;
+            } else if (commands[0].equals("done")) {
+                int index = Integer.parseInt(commands[1]) - 1;
 
+                //To be replaced with exception handling
                 if (index >= 0 && index < inputs.size()) {
                     inputs.get(index).markDone();
                     buffer.addElement("Nice! I've marked this task as done:");
-                    buffer.addElement(" [" + inputs.get(index).getStatusIcon() + "] "
-                            + inputs.get(index).getTaskName());
+                    buffer.addElement(inputs.get(index).toString());
                 } else {
                     buffer.addElement("Invalid index. Type 'list' to see your list.");
                 }
             } else if (input.equals("list")) {
+                buffer.addElement("Here are the tasks in your list:");
                 for (int i = 0; i < inputs.size(); i++) {
-                    String temp = Integer.toString(i + 1);
-                    buffer.addElement(temp.concat(".[" + inputs.get(i).getStatusIcon() + "] "
-                            + inputs.get(i).getTaskName()));
+                    String temp = Integer.toString(i + 1)  + ".";
+                    buffer.addElement(temp.concat(inputs.get(i).toString()));
                 }
             } else {
-                inputs.addElement(new Task(input));
-                buffer.addElement("added: " + input);
+                switch (commands[0]) {
+                case "todo":
+                    inputs.addElement(new Todo(input.replaceFirst("todo ","")));
+                    break;
+                case "deadline":
+                    inputs.addElement(new Deadline(input.substring(0, input.lastIndexOf(" /by"))
+                            .replaceFirst("deadline ", ""),
+                            input.split("/by ")[1]));
+                    break;
+                case "event":
+                    inputs.addElement(new Event(input.substring(0, input.lastIndexOf(" /at"))
+                            .replaceFirst("event ", ""),
+                            input.split("/at ")[1]));
+                    break;
+                default:
+                    inputs.addElement(new Task(input));
+                }
+                buffer.addElement("Got it. I've added this task:\n" + inputs.lastElement().toString()
+                        + "\nNow you have " + Integer.toString(inputs.size())
+                        + ((inputs.size() == 1) ? " task in the list." : " tasks in the list."));
             }
             printBuffer();
         }

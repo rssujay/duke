@@ -2,7 +2,7 @@ public class Task {
     protected String taskName;
     protected Boolean isDone;
 
-    public Task(String taskName){
+    public Task(String taskName) {
         this.taskName = taskName;
         this.isDone = false;
     }
@@ -11,11 +11,15 @@ public class Task {
         return (isDone ? "✓" : "✗"); //return tick or X symbols
     }
 
+    public String toString() {
+        return "[" + this.getStatusIcon() + "] "+ this.getTaskName();
+    }
+
     public String getTaskName() {
         return this.taskName;
     }
 
-    public void markDone(){
+    public void markDone() {
         this.isDone = true;
     }
 }
