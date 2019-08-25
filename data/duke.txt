@@ -1,4 +1,7 @@
-T | 0 | borrow book
-D | 1 | return book | Sunday
-E | 0 | project meeting | Mon 2-4pm
-E | 1 | project meeting | Mon 2-4pm
+T | 0 | read book
+D | 0 | wassup | 01/02/0003 0405
+E | 0 | testing | 01/02/0003 0405_06/07/0008 0910
+E | 1 | testing | 01/02/0003 0405_06/07/0008 0910
+E | 1 | testing | 01/02/0003 0405_06/07/0008 0910
+T | 1 | hi
+D | 0 | test | 11/11/2011 2345

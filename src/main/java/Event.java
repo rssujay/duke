@@ -1,9 +1,18 @@
 public class Event extends Task {
-    protected String at;
+    protected DateTime start;
+    protected DateTime end;
 
-    public Event(String description, String at) {
+    /**
+     * Constructor for Event object.
+     * @param description name of the event.
+     * @param at Will be broken into two dateTime objects.
+     * @throws DukeException thrown from DateTime object.
+     */
+    public Event(String description, String at) throws DukeException {
         super(description);
-        this.at = at;
+        String[] duration = at.split("_");
+        this.start = new DateTime(duration[0]);
+        this.end = new DateTime(duration[1]);
     }
 
     /**
@@ -12,23 +21,29 @@ public class Event extends Task {
      * @param description the name or description of the event.
      * @param at the actual date/time/duration of the event.
      */
-    public Event(int done, String description, String at) {
+    public Event(int done, String description, String at) throws DukeException {
         super(description);
         this.isDone = (done == 1);
-        this.at = at;
+        String[] duration = at.split("_");
+        this.start = new DateTime(duration[0]);
+        this.end = new DateTime(duration[1]);
     }
 
     @Override
     public String storeString() {
-        return "E | " + super.storeString() + " | " + this.getAt();
+        return "E | " + super.storeString() + " | " + this.getStart() + "_" + this.getEnd();
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (at: " + this.at + ")";
+        return "[E]" + super.toString() + " (at: " + this.getStart() + " to " + this.getEnd() + ")";
     }
 
-    private String getAt() {
-        return this.at;
+    private String getStart() {
+        return this.start.toString();
+    }
+
+    private String getEnd() {
+        return this.end.toString();
     }
 }

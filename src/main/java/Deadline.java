@@ -1,9 +1,9 @@
 public class Deadline extends Task {
-    protected String by;
+    protected DateTime by;
 
-    public Deadline(String description, String by) {
+    public Deadline(String description, String by) throws DukeException {
         super(description);
-        this.by = by;
+        this.by = new DateTime(by);
     }
 
     /**
@@ -12,10 +12,10 @@ public class Deadline extends Task {
      * @param description the name or description of the deadline.
      * @param by the due date/time of the deadline.
      */
-    public Deadline(int done, String description, String by) {
+    public Deadline(int done, String description, String by) throws DukeException {
         super(description);
         this.isDone = (done == 1);
-        this.by = by;
+        this.by = new DateTime(by);
     }
 
     @Override
@@ -29,6 +29,6 @@ public class Deadline extends Task {
     }
 
     private String getBy() {
-        return this.by;
+        return this.by.toString();
     }
 }

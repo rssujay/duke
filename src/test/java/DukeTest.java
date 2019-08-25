@@ -29,7 +29,12 @@ public class DukeTest {
         Scanner scanner = new Scanner(System.in);
         Vector<Task> inputs = new Vector<>();
         Storage dukeData = new Storage("data/duke.txt");
-        inputs = dukeData.getData();
+        try {
+            inputs = dukeData.getData();
+        } catch (DukeException e) {
+            PrintBuffer.addElement(e.getMessage());
+            System.out.println(PrintBuffer.getPrint());
+        }
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
@@ -86,7 +91,7 @@ public class DukeTest {
                 } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
                     PrintBuffer.addElement("Please ensure that you enter the full command.\n"
                             + "Deadline: deadline <task name> /by <end>\n"
-                            + "Event: event <task name> /at <duration>");
+                            + "Event: event <task name> /at <start as DD/MM/YY HHMM>_<end as DD/MM/YY HHMM>");
                 }
             }
             System.out.println(PrintBuffer.getPrint());

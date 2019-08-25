@@ -18,7 +18,7 @@ public class Storage {
             dukeData = new File(fileLocation);
             dukeData.createNewFile();
         } catch (IOException e) {
-            PrintBuffer.addElement(e.getMessage());
+            PrintBuffer.addElement("IO Exception: " + e.getMessage());
             System.out.println(PrintBuffer.getPrint());
         }
     }
@@ -27,7 +27,7 @@ public class Storage {
      * This method retrieves data from the text file, and constructs objects to insert back into the list.
      * @return tasks
      */
-    public Vector<Task> getData() {
+    public Vector<Task> getData() throws DukeException {
         Vector<Task> tasks = new Vector<>();
         try {
             BufferedReader inputStream = new BufferedReader(new FileReader(dukeData));
@@ -51,7 +51,7 @@ public class Storage {
             }
             inputStream.close();
         } catch (IOException e) {
-            PrintBuffer.addElement(e.getMessage());
+            PrintBuffer.addElement("IO Exception: " + e.getMessage());
             System.out.println(PrintBuffer.getPrint());
         }
         return tasks;
@@ -70,7 +70,7 @@ public class Storage {
             }
             outputStream.close();
         } catch (IOException e) {
-            PrintBuffer.addElement(e.getMessage());
+            PrintBuffer.addElement("IO Exception: " + e.getMessage());
             System.out.println(PrintBuffer.getPrint());
         }
     }
