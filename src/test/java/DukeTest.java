@@ -2,8 +2,6 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class DukeTest {
-    private static Vector<String> buffer = new Vector<>();
-
     /**
      Entry point into this java program.
      */
@@ -16,29 +14,15 @@ public class DukeTest {
                 + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello from\n" + logo);
          */
-        buffer.addElement("Hello! I'm Duke");
-        buffer.addElement("What can I do for you?");
-        printBuffer();
+        PrintBuffer.addElement("Hello! I'm Duke");
+        PrintBuffer.addElement("What can I do for you?");
+        System.out.println(PrintBuffer.getPrint());
         startDuke();
     }
 
-    /**
-     * Prints out each item currently in the buffer
-     * vector on a new line. Subsequently, clears the buffer.
-     */
-    private static void printBuffer() {
-        String horizontalLine = "____________________________________________________________";
-        System.out.println(horizontalLine);
-        for (int i = 0; i < buffer.size(); i++) {
-            System.out.println(buffer.get(i));
-        }
-        System.out.println(horizontalLine);
-        buffer.clear();
-    }
-
     private static void exitConversation() {
-        buffer.addElement("Bye. Hope to see you again soon!");
-        printBuffer();
+        PrintBuffer.addElement("Bye. Hope to see you again soon!");
+        System.out.println(PrintBuffer.getPrint());
     }
 
     private static void startDuke() {
@@ -53,45 +37,55 @@ public class DukeTest {
                 exitConversation();
                 break;
             } else if (commands[0].equals("done")) {
-                int index = Integer.parseInt(commands[1]) - 1;
-
-                //To be replaced with exception handling
-                if (index >= 0 && index < inputs.size()) {
+                try {
+                    int index = Integer.parseInt(commands[1]) - 1;
                     inputs.get(index).markDone();
-                    buffer.addElement("Nice! I've marked this task as done:");
-                    buffer.addElement(inputs.get(index).toString());
-                } else {
-                    buffer.addElement("Invalid index. Type 'list' to see your list.");
+                    PrintBuffer.addElement("Nice! I've marked this task as done:");
+                    PrintBuffer.addElement(inputs.get(index).toString());
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    PrintBuffer.clear();
+                    PrintBuffer.addElement("Invalid index. Type 'list' to see your list.");
                 }
             } else if (input.equals("list")) {
-                buffer.addElement("Here are the tasks in your list:");
+                PrintBuffer.addElement("Here are the tasks in your list:");
                 for (int i = 0; i < inputs.size(); i++) {
                     String temp = Integer.toString(i + 1)  + ".";
-                    buffer.addElement(temp.concat(inputs.get(i).toString()));
+                    PrintBuffer.addElement(temp.concat(inputs.get(i).toString()));
                 }
             } else {
-                switch (commands[0]) {
-                case "todo":
-                    inputs.addElement(new Todo(input.replaceFirst("todo ","")));
-                    break;
-                case "deadline":
-                    inputs.addElement(new Deadline(input.substring(0, input.lastIndexOf(" /by"))
-                            .replaceFirst("deadline ", ""),
-                            input.split("/by ")[1]));
-                    break;
-                case "event":
-                    inputs.addElement(new Event(input.substring(0, input.lastIndexOf(" /at"))
-                            .replaceFirst("event ", ""),
-                            input.split("/at ")[1]));
-                    break;
-                default:
-                    inputs.addElement(new Task(input));
+                try {
+                    switch (commands[0]) {
+                    case "todo":
+                        if (commands.length == 1) {
+                            throw new DukeException("☹ OOPS!!! The description of a todo cannot be empty.");
+                        }
+                        inputs.addElement(new Todo(input.replaceFirst("todo ", "")));
+                        break;
+                    case "deadline":
+                        inputs.addElement(new Deadline(input.substring(0, input.lastIndexOf(" /by"))
+                                .replaceFirst("deadline ", ""),
+                                input.split("/by ")[1]));
+                        break;
+                    case "event":
+                        inputs.addElement(new Event(input.substring(0, input.lastIndexOf(" /at"))
+                                .replaceFirst("event ", ""),
+                                input.split("/at ")[1]));
+                        break;
+                    default:
+                        throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                    }
+                    PrintBuffer.addElement("Got it. I've added this task:\n" + inputs.lastElement().toString()
+                            + "\nNow you have " + Integer.toString(inputs.size())
+                            + ((inputs.size() == 1) ? " task in the list." : " tasks in the list."));
+                } catch (DukeException e) {
+                    PrintBuffer.addElement(e.getMessage());
+                } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
+                    PrintBuffer.addElement("Please ensure that you enter the full command.\n"
+                            + "Deadline: deadline <task name> /by <end>\n"
+                            + "Event: event <task name> /at <duration>");
                 }
-                buffer.addElement("Got it. I've added this task:\n" + inputs.lastElement().toString()
-                        + "\nNow you have " + Integer.toString(inputs.size())
-                        + ((inputs.size() == 1) ? " task in the list." : " tasks in the list."));
             }
-            printBuffer();
+            System.out.println(PrintBuffer.getPrint());
         }
     }
 }
