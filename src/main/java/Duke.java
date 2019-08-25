@@ -28,6 +28,8 @@ public class Duke {
     private static void startDuke() {
         Scanner scanner = new Scanner(System.in);
         Vector<Task> inputs = new Vector<>();
+        Storage dukeData = new Storage("data/duke.txt");
+        inputs = dukeData.getData();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
@@ -42,6 +44,7 @@ public class Duke {
                     inputs.get(index).markDone();
                     PrintBuffer.addElement("Nice! I've marked this task as done:");
                     PrintBuffer.addElement(inputs.get(index).toString());
+                    dukeData.setData(inputs);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     PrintBuffer.clear();
                     PrintBuffer.addElement("Invalid index. Type 'list' to see your list.");
@@ -74,6 +77,7 @@ public class Duke {
                     default:
                         throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
                     }
+                    dukeData.setData(inputs);
                     PrintBuffer.addElement("Got it. I've added this task:\n" + inputs.lastElement().toString()
                             + "\nNow you have " + Integer.toString(inputs.size())
                             + ((inputs.size() == 1) ? " task in the list." : " tasks in the list."));

@@ -12,7 +12,11 @@ public class Task {
     }
 
     public String toString() {
-        return "[" + this.getStatusIcon() + "] "+ this.getTaskName();
+        return "[" + this.getStatusIcon() + "] " + this.getTaskName();
+    }
+
+    public String storeString() {
+        return Integer.toString((isDone ? 1 : 0)) + " | " + this.getTaskName();
     }
 
     public String getTaskName() {
