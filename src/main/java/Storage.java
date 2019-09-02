@@ -9,17 +9,22 @@ import java.util.Vector;
 public class Storage {
     private File dukeData;
 
+    class StorageException extends DukeException {
+        StorageException(String errMsg) {
+            super("I/O Error\n\n" + errMsg);
+        }
+    }
+
     /**
      * This constructor creates the file if needed.
      * @param fileLocation relative path of the text file to store data in.
      */
-    public Storage(String fileLocation) {
+    public Storage(String fileLocation) throws DukeException {
         try {
             dukeData = new File(fileLocation);
             dukeData.createNewFile();
         } catch (IOException e) {
-            PrintBuffer.addElement("IO Exception: " + e.getMessage());
-            System.out.println(PrintBuffer.getPrint());
+            throw new StorageException(e.getMessage());
         }
     }
 
@@ -51,8 +56,7 @@ public class Storage {
             }
             inputStream.close();
         } catch (IOException e) {
-            PrintBuffer.addElement("IO Exception: " + e.getMessage());
-            System.out.println(PrintBuffer.getPrint());
+            throw new StorageException(e.getMessage());
         }
         return tasks;
     }
@@ -61,7 +65,7 @@ public class Storage {
      * This method takes in a vector and calls each task's storeString method to store its data in the correct format.
      * @param tasks A vector of tasks currently in the program.
      */
-    public void setData(Vector<Task> tasks) {
+    public void setData(Vector<Task> tasks) throws DukeException {
         try {
             BufferedWriter outputStream = new BufferedWriter(new FileWriter(dukeData));
             for (Task task : tasks) {
@@ -70,8 +74,7 @@ public class Storage {
             }
             outputStream.close();
         } catch (IOException e) {
-            PrintBuffer.addElement("IO Exception: " + e.getMessage());
-            System.out.println(PrintBuffer.getPrint());
+            throw new StorageException(e.getMessage());
         }
     }
 }

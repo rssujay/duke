@@ -2,6 +2,10 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Duke {
+    static Scanner scanner = new Scanner(System.in);
+    static Vector<Task> inputs = new Vector<>();
+    static Storage dukeData;
+
     /**
      Entry point into this java program.
      */
@@ -20,16 +24,27 @@ public class Duke {
         startDuke();
     }
 
+    static class InputException extends DukeException {
+        InputException(String errorMsg) {
+            super("Invalid Input\n\n" + errorMsg);
+        }
+    }
+
     private static void exitConversation() {
         PrintBuffer.addElement("Bye. Hope to see you again soon!");
         System.out.println(PrintBuffer.getPrint());
     }
 
+    private static void addTask() throws DukeException {
+        dukeData.setData(inputs);
+        PrintBuffer.addElement("Got it. I've added this task:\n" + inputs.lastElement().toString()
+                + "\nNow you have " + Integer.toString(inputs.size())
+                + ((inputs.size() == 1) ? " task in the list." : " tasks in the list."));
+    }
+
     private static void startDuke() {
-        Scanner scanner = new Scanner(System.in);
-        Vector<Task> inputs = new Vector<>();
-        Storage dukeData = new Storage("data/duke.txt");
         try {
+            dukeData = new Storage("data/duke.txt");
             inputs = dukeData.getData();
         } catch (DukeException e) {
             PrintBuffer.addElement(e.getMessage());
@@ -40,61 +55,82 @@ public class Duke {
             String input = scanner.nextLine();
             String[] commands = input.split(" ");
 
-            if (input.equals("bye")) {
+            if (commands[0].equals("bye")) {
                 exitConversation();
                 break;
-            } else if (commands[0].equals("done")) {
-                try {
-                    int index = Integer.parseInt(commands[1]) - 1;
-                    inputs.get(index).markDone();
-                    PrintBuffer.addElement("Nice! I've marked this task as done:");
-                    PrintBuffer.addElement(inputs.get(index).toString());
-                    dukeData.setData(inputs);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    PrintBuffer.clear();
-                    PrintBuffer.addElement("Invalid index. Type 'list' to see your list.");
-                }
-            } else if (input.equals("list")) {
-                PrintBuffer.addElement("Here are the tasks in your list:");
-                for (int i = 0; i < inputs.size(); i++) {
-                    String temp = Integer.toString(i + 1)  + ".";
-                    PrintBuffer.addElement(temp.concat(inputs.get(i).toString()));
-                }
-            } else {
-                try {
-                    switch (commands[0]) {
-                    case "todo":
-                        if (commands.length == 1) {
-                            throw new DukeException("☹ OOPS!!! The description of a todo cannot be empty.");
-                        }
-                        inputs.addElement(new Todo(input.replaceFirst("todo ", "")));
+            }
+
+            try {
+                switch (commands[0]) {
+                case "done":
+                    try {
+                        int index = Integer.parseInt(commands[1]) - 1;
+                        inputs.get(index).markDone();
+                        PrintBuffer.addElement("Nice! I've marked this task as done:");
+                        PrintBuffer.addElement(inputs.get(index).toString());
+                        dukeData.setData(inputs);
                         break;
-                    case "deadline":
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        throw new InputException("Invalid index entered. Type 'list' to see your list.");
+                    }
+
+                case "list":
+                    PrintBuffer.addElement("Here are the tasks in your list:");
+                    for (int i = 0; i < inputs.size(); i++) {
+                        String temp = Integer.toString(i + 1) + ".";
+                        PrintBuffer.addElement(temp.concat(inputs.get(i).toString()));
+                    }
+                    break;
+
+                case "todo":
+                    if (commands.length == 1) {
+                        throw new InputException("☹ OOPS!!! The description of a todo cannot be empty.");
+                    }
+                    inputs.addElement(new Todo(input.replaceFirst("todo ", "")));
+                    addTask();
+                    break;
+
+                case "deadline":
+                    try {
+                        if (commands[1].equals("/by")) {
+                            throw new InputException("☹ OOPS!!! The description of a deadline cannot be empty.");
+                        }
                         inputs.addElement(new Deadline(input.substring(0, input.lastIndexOf(" /by"))
                                 .replaceFirst("deadline ", ""),
                                 input.split("/by ")[1]));
-                        break;
-                    case "event":
+                        addTask();
+                    } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
+                        throw new InputException("Please ensure that you enter the full command.\n"
+                                + "Deadline: deadline <task name> /by <DD/MM/YY HHMM>\n"
+                                + "Event: event <task name> /at <start as DD/MM/YY HHMM>_<end as DD/MM/YY HHMM>");
+                    }
+                    break;
+
+                case "event":
+                    try {
+                        if (commands[1].equals("/at")) {
+                            throw new InputException("☹ OOPS!!! The description of a event cannot be empty.");
+                        }
+
                         inputs.addElement(new Event(input.substring(0, input.lastIndexOf(" /at"))
                                 .replaceFirst("event ", ""),
                                 input.split("/at ")[1]));
-                        break;
-                    default:
-                        throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                        addTask();
+                    } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
+                        throw new InputException("Please ensure that you enter the full command.\n"
+                                + "Deadline: deadline <task name> /by <DD/MM/YY HHMM>\n"
+                                + "Event: event <task name> /at <start as DD/MM/YY HHMM>_<end as DD/MM/YY HHMM>");
                     }
-                    dukeData.setData(inputs);
-                    PrintBuffer.addElement("Got it. I've added this task:\n" + inputs.lastElement().toString()
-                            + "\nNow you have " + Integer.toString(inputs.size())
-                            + ((inputs.size() == 1) ? " task in the list." : " tasks in the list."));
-                } catch (DukeException e) {
-                    PrintBuffer.addElement(e.getMessage());
-                } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
-                    PrintBuffer.addElement("Please ensure that you enter the full command.\n"
-                            + "Deadline: deadline <task name> /by <end>\n"
-                            + "Event: event <task name> /at <start as DD/MM/YY HHMM>_<end as DD/MM/YY HHMM>");
+                    break;
+
+                default:
+                    throw new InputException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
                 }
+            } catch (DukeException e) {
+                PrintBuffer.addElement(e.getMessage());
+            } finally {
+                System.out.println(PrintBuffer.getPrint());
             }
-            System.out.println(PrintBuffer.getPrint());
         }
     }
 }

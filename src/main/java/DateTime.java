@@ -5,6 +5,18 @@ public class DateTime {
     private int hour;
     private int min;
 
+    class DateValueException extends DukeException {
+        DateValueException(String errorMsg) {
+            super("Invalid Date Values\n" + errorMsg);
+        }
+    }
+
+    class DateFormatException extends DukeException {
+        DateFormatException(String errorMsg) {
+            super("Invalid Date Format\n\n" + errorMsg);
+        }
+    }
+
     /**
      * Constructor for simple dateTime object.
      * @param dateTime A string in the format DD/MM/YYYY.
@@ -21,13 +33,13 @@ public class DateTime {
             int timeComponents = Integer.parseInt(components[1]);
             this.min = timeComponents % 100;
             this.hour = timeComponents / 100;
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+            throw new DateFormatException("Please enter valid dates and times, as DD/MM/YYYY HHMM");
+        }
 
-            if ((day < 1 || day > 31) || (month < 1 || month > 12)
-                    || (year < 0) || (hour < 0 || hour > 23) || (min < 0 || min > 59)) {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            throw new DukeException("Please enter valid dates and times, as DD/MM/YYYY HHMM");
+        if ((day < 1 || day > 31) || (month < 1 || month > 12)
+                || (year < 0) || (hour < 0 || hour > 23) || (min < 0 || min > 59)) {
+            throw new DateValueException("Please enter valid dates and times, as DD/MM/YYYY HHMM");
         }
     }
 
