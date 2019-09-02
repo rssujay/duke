@@ -35,10 +35,9 @@ public class DukeTest {
         System.out.println(PrintBuffer.getPrint());
     }
 
-    private static void addTask() throws DukeException {
+    private static void updateTasks() throws DukeException {
         dukeData.setData(inputs);
-        PrintBuffer.addElement("Got it. I've added this task:\n" + inputs.lastElement().toString()
-                + "\nNow you have " + Integer.toString(inputs.size())
+        PrintBuffer.addElement("You currently have " + Integer.toString(inputs.size())
                 + ((inputs.size() == 1) ? " task in the list." : " tasks in the list."));
     }
 
@@ -69,10 +68,10 @@ public class DukeTest {
                         PrintBuffer.addElement("Nice! I've marked this task as done:");
                         PrintBuffer.addElement(inputs.get(index).toString());
                         dukeData.setData(inputs);
-                        break;
                     } catch (ArrayIndexOutOfBoundsException e) {
                         throw new InputException("Invalid index entered. Type 'list' to see your list.");
                     }
+                    break;
 
                 case "list":
                     PrintBuffer.addElement("Here are the tasks in your list:");
@@ -82,12 +81,42 @@ public class DukeTest {
                     }
                     break;
 
+                case "delete":
+                    try {
+                        int index = Integer.parseInt(commands[1]) - 1;
+                        Task removed = inputs.remove(index);
+                        PrintBuffer.addElement("Noted. I've removed this task:");
+                        PrintBuffer.addElement(removed.toString());
+                        updateTasks();
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        throw new InputException("Invalid index entered. Type 'list' to see your list.");
+                    }
+                    break;
+
+                case "find":
+                    if (commands.length == 1) {
+                        throw new InputException("☹ OOPS!!! You need to enter a keyword.");
+                    }
+                    PrintBuffer.addElement("Here are the matching tasks in your list:");
+                    String keyword = input.replaceFirst("find ", "");
+                    int resultCount = 0;
+                    for (int i = 0; i < inputs.size(); i++) {
+                        String description = inputs.get(i).getTaskName();
+                        if (description.contains(keyword)) {
+                            String temp = Integer.toString(resultCount++ + 1) + ".";
+                            PrintBuffer.addElement(temp.concat(inputs.get(i).toString()));
+                        }
+                    }
+                    break;
+
                 case "todo":
                     if (commands.length == 1) {
                         throw new InputException("☹ OOPS!!! The description of a todo cannot be empty.");
                     }
                     inputs.addElement(new Todo(input.replaceFirst("todo ", "")));
-                    addTask();
+                    PrintBuffer.addElement("Got it. I've added this todo:");
+                    PrintBuffer.addElement(inputs.lastElement().toString());
+                    updateTasks();
                     break;
 
                 case "deadline":
@@ -98,7 +127,9 @@ public class DukeTest {
                         inputs.addElement(new Deadline(input.substring(0, input.lastIndexOf(" /by"))
                                 .replaceFirst("deadline ", ""),
                                 input.split("/by ")[1]));
-                        addTask();
+                        PrintBuffer.addElement("Got it. I've added this deadline:");
+                        PrintBuffer.addElement(inputs.lastElement().toString());
+                        updateTasks();
                     } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
                         throw new InputException("Please ensure that you enter the full command.\n"
                                 + "Deadline: deadline <task name> /by <DD/MM/YY HHMM>\n"
@@ -115,7 +146,9 @@ public class DukeTest {
                         inputs.addElement(new Event(input.substring(0, input.lastIndexOf(" /at"))
                                 .replaceFirst("event ", ""),
                                 input.split("/at ")[1]));
-                        addTask();
+                        PrintBuffer.addElement("Got it. I've added this event:");
+                        PrintBuffer.addElement(inputs.lastElement().toString());
+                        updateTasks();
                     } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
                         throw new InputException("Please ensure that you enter the full command.\n"
                                 + "Deadline: deadline <task name> /by <DD/MM/YY HHMM>\n"

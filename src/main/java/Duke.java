@@ -93,6 +93,22 @@ public class Duke {
                     }
                     break;
 
+                case "find":
+                    if (commands.length == 1) {
+                        throw new InputException("☹ OOPS!!! You need to enter a keyword.");
+                    }
+                    PrintBuffer.addElement("Here are the matching tasks in your list:");
+                    String keyword = input.replaceFirst("find ", "");
+                    int resultCount = 0;
+                    for (int i = 0; i < inputs.size(); i++) {
+                        String description = inputs.get(i).getTaskName();
+                        if (description.contains(keyword)) {
+                            String temp = Integer.toString(resultCount++ + 1) + ".";
+                            PrintBuffer.addElement(temp.concat(inputs.get(i).toString()));
+                        }
+                    }
+                    break;
+
                 case "todo":
                     if (commands.length == 1) {
                         throw new InputException("☹ OOPS!!! The description of a todo cannot be empty.");
