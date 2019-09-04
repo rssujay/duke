@@ -1,5 +1,10 @@
+package Duke.Tasks;
+
+import Duke.DateTime;
+import Duke.Exceptions.DukeException;
+
 public class Deadline extends Task {
-    protected DateTime by;
+    private DateTime by;
 
     public Deadline(String description, String by) throws DukeException {
         super(description);
@@ -7,7 +12,7 @@ public class Deadline extends Task {
     }
 
     /**
-     * This constructor is used for recreation of Deadline from storage.
+     * This constructor is used for recreation of Duke.Tasks.Deadline from storage.
      * @param done 1 if task has been marked complete, 0 otherwise.
      * @param description the name or description of the deadline.
      * @param by the due date/time of the deadline.

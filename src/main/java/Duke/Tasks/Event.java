@@ -1,12 +1,17 @@
+package Duke.Tasks;
+
+import Duke.DateTime;
+import Duke.Exceptions.DukeException;
+
 public class Event extends Task {
-    protected DateTime start;
-    protected DateTime end;
+    private DateTime start;
+    private DateTime end;
 
     /**
-     * Constructor for Event object.
+     * Constructor for Duke.Tasks.Event object.
      * @param description name of the event.
      * @param at Will be broken into two dateTime objects.
-     * @throws DukeException thrown from DateTime object.
+     * @throws DukeException thrown from Duke.DateTime object.
      */
     public Event(String description, String at) throws DukeException {
         super(description);
@@ -16,7 +21,7 @@ public class Event extends Task {
     }
 
     /**
-     * This constructor is used for recreation of Deadline from storage.
+     * This constructor is used for recreation of Duke.Tasks.Deadline from storage.
      * @param done 1 if task has been marked complete, 0 otherwise.
      * @param description the name or description of the event.
      * @param at the actual date/time/duration of the event.

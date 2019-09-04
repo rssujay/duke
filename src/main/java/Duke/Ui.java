@@ -1,8 +1,10 @@
+package Duke;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class DukeTest {
+public class Ui {
     private Scanner scanner = new Scanner(System.in);
 
     /**
@@ -10,7 +12,7 @@ public class DukeTest {
      */
     public void showWelcome() {
         List<String> welcome = new ArrayList<>();
-        welcome.add("Hello! I'm Duke.Duke");
+        welcome.add("Hello! I'm Duke");
         welcome.add("What can I do for you?");
         showFormatted(welcome);
     }
@@ -41,7 +43,7 @@ public class DukeTest {
         for (String outputItem : output) {
             formattedOutput = formattedOutput.concat(outputItem + "\n");
         }
-        showFormatted(formattedOutput);
+        showFormatted(formattedOutput.substring(0, formattedOutput.length() - 1));
     }
 
     public String readInput() {

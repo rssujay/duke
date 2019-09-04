@@ -1,21 +1,15 @@
+package Duke;
+
+import Duke.Exceptions.DateFormatException;
+import Duke.Exceptions.DateValueException;
+import Duke.Exceptions.DukeException;
+
 public class DateTime {
     private int day;
     private int month;
     private int year;
     private int hour;
     private int min;
-
-    class DateValueException extends DukeException {
-        DateValueException(String errorMsg) {
-            super("Invalid Date Values\n" + errorMsg);
-        }
-    }
-
-    class DateFormatException extends DukeException {
-        DateFormatException(String errorMsg) {
-            super("Invalid Date Format\n\n" + errorMsg);
-        }
-    }
 
     /**
      * Constructor for simple dateTime object.

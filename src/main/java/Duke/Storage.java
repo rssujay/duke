@@ -1,19 +1,23 @@
+package Duke;
+
+import Duke.Exceptions.DukeException;
+import Duke.Exceptions.StorageException;
+import Duke.Tasks.Deadline;
+import Duke.Tasks.Event;
+import Duke.Tasks.Task;
+import Duke.Tasks.Todo;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.List;
 import java.util.Vector;
 
 public class Storage {
-    private File dukeData;
-
-    class StorageException extends DukeException {
-        StorageException(String errMsg) {
-            super("I/O Error\n\n" + errMsg);
-        }
-    }
+    private File dukeFile;
 
     /**
      * This constructor creates the file if needed.
@@ -21,8 +25,8 @@ public class Storage {
      */
     public Storage(String fileLocation) throws DukeException {
         try {
-            dukeData = new File(fileLocation);
-            dukeData.createNewFile();
+            dukeFile = new File(fileLocation);
+            dukeFile.createNewFile();
         } catch (IOException e) {
             throw new StorageException(e.getMessage());
         }
@@ -32,10 +36,10 @@ public class Storage {
      * This method retrieves data from the text file, and constructs objects to insert back into the list.
      * @return tasks
      */
-    public Vector<Task> getData() throws DukeException {
+    public List<Task> loadData() throws DukeException {
         Vector<Task> tasks = new Vector<>();
         try {
-            BufferedReader inputStream = new BufferedReader(new FileReader(dukeData));
+            BufferedReader inputStream = new BufferedReader(new FileReader(dukeFile));
             while (true) {
                 String currentLine = inputStream.readLine();
                 if (currentLine == null) {
@@ -65,9 +69,9 @@ public class Storage {
      * This method takes in a vector and calls each task's storeString method to store its data in the correct format.
      * @param tasks A vector of tasks currently in the program.
      */
-    public void setData(Vector<Task> tasks) throws DukeException {
+    public void setData(List<Task> tasks) throws DukeException {
         try {
-            BufferedWriter outputStream = new BufferedWriter(new FileWriter(dukeData));
+            BufferedWriter outputStream = new BufferedWriter(new FileWriter(dukeFile));
             for (Task task : tasks) {
                 outputStream.write(task.storeString());
                 outputStream.newLine();
