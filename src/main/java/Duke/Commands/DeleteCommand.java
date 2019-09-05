@@ -25,7 +25,7 @@ public class DeleteCommand extends Command {
      * @throws DukeException Invalid index or storage error.
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) throws DukeException {
+    public String execute(TaskList taskList, Storage storage, Ui ui) throws DukeException {
         try {
             List<String> formattedOutput = new ArrayList<>();
             List<Task> tasks = taskList.getTasks();
@@ -35,7 +35,7 @@ public class DeleteCommand extends Command {
             formattedOutput.add("Noted. I've removed this task:\n" + removed.toString());
             formattedOutput.add("You currently have " + tasks.size()
                     + ((tasks.size() == 1) ? " task in the list." : " tasks in the list."));
-            ui.showFormatted(formattedOutput);
+            return ui.showFormatted(formattedOutput);
 
         } catch (IndexOutOfBoundsException e) {
             throw new InputException("Invalid index entered. Type 'list' to see your list.");

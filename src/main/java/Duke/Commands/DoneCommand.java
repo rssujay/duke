@@ -25,14 +25,14 @@ public class DoneCommand extends Command {
      * @throws DukeException invalid index or storage error.
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) throws DukeException {
+    public String execute(TaskList taskList, Storage storage, Ui ui) throws DukeException {
         try {
             List<String> formattedOutput = new ArrayList<>();
             Task completed = taskList.markDone(index);
             storage.setData(taskList.getTasks());
             formattedOutput.add("Nice! I've marked this task as done:");
             formattedOutput.add(completed.toString());
-            ui.showFormatted(formattedOutput);
+            return ui.showFormatted(formattedOutput);
         } catch (IndexOutOfBoundsException e) {
             throw new InputException("Invalid index entered. Type 'list' to see your list.");
         }

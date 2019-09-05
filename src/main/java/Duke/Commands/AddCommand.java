@@ -44,7 +44,7 @@ public class AddCommand extends Command {
      * @throws DukeException invalid input or storage error.
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) throws DukeException {
+    public String execute(TaskList taskList, Storage storage, Ui ui) throws DukeException {
         List<String> formattedOutput = new ArrayList<>();
         Task added;
 
@@ -78,7 +78,7 @@ public class AddCommand extends Command {
         }
         formattedOutput.add("You currently have " + taskList.getTasks().size()
                 + ((taskList.getTasks().size() == 1) ? " task in the list." : " tasks in the list."));
-        ui.showFormatted(formattedOutput);
         storage.setData(taskList.getTasks());
+        return ui.showFormatted(formattedOutput);
     }
 }

@@ -33,7 +33,7 @@ public class FindCommand extends Command {
      * @param ui Ui instance
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) {
+    public String execute(TaskList taskList, Storage storage, Ui ui) {
         int resultCount = 0;
         ArrayList<String> formattedOutput = new ArrayList<>();
         formattedOutput.add("Here are the matching tasks in your list:");
@@ -44,6 +44,6 @@ public class FindCommand extends Command {
                 formattedOutput.add((resultCount++ + 1) + ". " + task.toString());
             }
         }
-        ui.showFormatted(formattedOutput);
+        return ui.showFormatted(formattedOutput);
     }
 }

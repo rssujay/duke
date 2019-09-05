@@ -17,13 +17,13 @@ public class ListCommand extends Command {
      * @param ui Ui instance.
      */
     @Override
-    public void execute(TaskList taskList, Storage storage, Ui ui) {
+    public String execute(TaskList taskList, Storage storage, Ui ui) {
         List<Task> tasks = taskList.getTasks();
         List<String> formattedOutput = new ArrayList<>();
         formattedOutput.add("Here are the tasks in your list:");
         for (int i = 0; i < taskList.getTasks().size(); i++) {
             formattedOutput.add((Integer.toString(i + 1) + ". " + tasks.get(i).toString()));
         }
-        ui.showFormatted(formattedOutput);
+        return ui.showFormatted(formattedOutput);
     }
 }
