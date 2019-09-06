@@ -32,7 +32,7 @@ javafx {
 
 application {
     // Change this to your main class.
-    mainClassName = "Duke.GUI.Launcher"
+    mainClassName = "duke.Duke"
 }
 
 dependencies {
