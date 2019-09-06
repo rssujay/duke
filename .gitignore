@@ -14,5 +14,5 @@ src/main/resources/docs/
 bin/
 
 #My additions
-/data/duke.txt
+/data/*.txt
 /text-ui-test/*.txt

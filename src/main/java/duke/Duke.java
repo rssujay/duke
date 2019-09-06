@@ -10,7 +10,7 @@ public class Duke {
     private boolean shutdown = false;
 
     /**
-     * Constructor for CLI interface.
+     * Constructor for CLI version of Duke.
      * @param filePath A String representing path to the storage file on hard disk.
      */
     public Duke(String filePath) {
@@ -21,6 +21,8 @@ public class Duke {
         } catch (DukeException e) {
             userInterface.showFormatted(e.getMessage());
             tasks = new TaskList();
+        } finally {
+            this.startDukeCli();
         }
     }
 
@@ -29,7 +31,6 @@ public class Duke {
      */
     public Duke() {
         userInterface = new Ui();
-        userInterface.setPrintOutput(false);
 
         try {
             dukeData = new Storage("data/duke.txt");
@@ -40,18 +41,15 @@ public class Duke {
         }
     }
 
-    private void startDuke() {
-        userInterface.showWelcome();
+    /**
+     * CLI mode - the String returned by getResponse is to be printed to the console.
+     */
+    private void startDukeCli() {
+        userInterface.print(userInterface.showWelcome());
 
         while (!this.isShutdown()) {
             String input = userInterface.readInput();
-            try {
-                Command command = Parser.parse(input);
-                command.execute(tasks, dukeData, userInterface);
-                this.setShutdown(command.isExit());
-            } catch (DukeException e) {
-                userInterface.showFormatted(e.getMessage());
-            }
+            userInterface.print(getResponse(input));
         }
     }
 
@@ -60,26 +58,21 @@ public class Duke {
      */
     public static void main(String[] args) {
         Duke dukeInstance = new Duke("data/duke.txt");
-        dukeInstance.startDuke();
     }
 
     /**
-     * GUI layer to interact with Duke.
-     * @param input String input from GUI layer.
-     * @return output String to be printed out to the GUI layer.
+     * Method to interact with Duke.
+     * @param input String input from GUI/CLI layer.
+     * @return output response String to be returned to GUI/CLI.
      */
     public String getResponse(String input) {
-        if (!this.isShutdown()) {
-            try {
-                Command command = Parser.parse(input);
-                String response = command.execute(tasks, dukeData, userInterface);
-                this.setShutdown(command.isExit());
-                return response;
-            } catch (DukeException e) {
-                return userInterface.showFormatted(e.getMessage());
-            }
-        } else {
-            return "Chat bot Closed.";
+        try {
+            Command command = Parser.parse(input);
+            String response = command.execute(tasks, dukeData, userInterface);
+            this.setShutdown(command.isExit());
+            return response;
+        } catch (DukeException e) {
+            return userInterface.showFormatted(e.getMessage());
         }
     }
 
@@ -87,7 +80,7 @@ public class Duke {
         this.shutdown = shutdown;
     }
 
-    private boolean isShutdown() {
+    public boolean isShutdown() {
         return shutdown;
     }
 }

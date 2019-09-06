@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 public class Ui {
     private Scanner scanner = new Scanner(System.in);
-    private boolean printOutput = true;
 
     /**
      * This is to show a welcome message on startup.
@@ -28,15 +27,12 @@ public class Ui {
 
     /**
      * This is to add the Duke UI wrapper to printed messages.
-     * @param output A single string to be printed.
+     * @param output A single string to be formatted.
      * @return the formatted output.
      */
     public String showFormatted(String output) {
         String horizontalLine = "____________________________________________________________";
         String formattedOutput = horizontalLine + "\n" + output + "\n" + horizontalLine;
-        if (this.printOutput) {
-            System.out.println(formattedOutput);
-        }
         return formattedOutput;
     }
 
@@ -53,11 +49,11 @@ public class Ui {
         return showFormatted(formattedOutput.substring(0, formattedOutput.length() - 1));
     }
 
-    public String readInput() {
-        return scanner.nextLine();
+    public void print(String input) {
+        System.out.println(input);
     }
 
-    public void setPrintOutput(boolean printOutput) {
-        this.printOutput = printOutput;
+    public String readInput() {
+        return scanner.nextLine();
     }
 }
