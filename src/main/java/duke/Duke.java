@@ -10,35 +10,38 @@ public class Duke {
     private boolean shutdown = false;
 
     /**
-     * Constructor for CLI version of Duke.
+     * Full Constructor for CLI/GUI version of Duke.
      * @param filePath A String representing path to the storage file on hard disk.
      */
-    public Duke(String filePath) {
+    public Duke(String filePath, boolean cliMode) {
         userInterface = new Ui();
         try {
             dukeData = new Storage(filePath);
             tasks = new TaskList(dukeData.loadData());
         } catch (DukeException e) {
-            userInterface.showFormatted(e.getMessage());
+            if (cliMode) {
+                userInterface.print(userInterface.showFormatted(e.getMessage()));
+            }
             tasks = new TaskList();
         } finally {
-            this.startDukeCli();
+            if (cliMode) {
+                this.startDukeCli();
+            }
         }
     }
 
     /**
-     * Constructor for GUI version of Duke.
+     * Default Constructor, Entry point into this java program, for CLI version.
      */
     public Duke() {
-        userInterface = new Ui();
+        this("data/duke.txt", false);
+    }
 
-        try {
-            dukeData = new Storage("data/duke.txt");
-            tasks = new TaskList(dukeData.loadData());
-        } catch (DukeException e) {
-            userInterface.showFormatted(e.getMessage());
-            tasks = new TaskList();
-        }
+    /**
+     * Entry point into this java program, for CLI version.
+     */
+    public static void main(String[] args) {
+        Duke dukeInstance = new Duke("data/duke.txt", true);
     }
 
     /**
@@ -51,13 +54,6 @@ public class Duke {
             String input = userInterface.readInput();
             userInterface.print(getResponse(input));
         }
-    }
-
-    /**
-     * Entry point into this java program, for CLI version.
-     */
-    public static void main(String[] args) {
-        Duke dukeInstance = new Duke("data/duke.txt");
     }
 
     /**
